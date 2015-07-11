@@ -5,7 +5,7 @@ using System.Collections;
 public class GameManager : MonoBehaviour
 {
     public List<GameObject> Players;
-    public List<GameObject> Tiles;
+    public GameObject[] Tiles;
     public Vector2 TargetPos;
     public Vector2 StepPos;
     public Vector2 CurrentPos;
@@ -23,17 +23,14 @@ public class GameManager : MonoBehaviour
     public int CurrentPlayerNr;
     public int ExtraMoveAmount;
 	public Houses Houses;
+    public Dice Dice;
 
     bool KeyPressed;
     bool RoundStarted;
     bool PlayerMoved;
     bool DiceRolled;
-	double DiceTimer;
-	int[] DiceNumbers;
-	bool AnimDice;
     bool GameEnded;
 	bool SpecialTile;
-	bool AbleToStop;
 
     // Use this for initialization
     void Start()
@@ -42,7 +39,6 @@ public class GameManager : MonoBehaviour
 		List<PlayerInfo> PlayersInfo = GameObject.Find("PlayerMenu").GetComponent<PlayerMenu>().Players;
         int PlayerNr = 1;
 		Houses = GameObject.Find("Houses").GetComponent<Houses>();
-
         foreach (PlayerInfo PlayerInformation in PlayersInfo)
         {
             GameObject Player = (GameObject)GameObject.Instantiate(PlayerObject);
@@ -54,21 +50,6 @@ public class GameManager : MonoBehaviour
             PlayerNr++;
         }
         
-		AnimDice = false;
-		DiceNumbers = new int[15];
-		for(int i=0; i<DiceNumbers.Length; i++)
-		{
-			int DiceRoll = Random.Range(1,6);
-			if(i != 0)
-				while(DiceRoll == DiceNumbers[i-1])
-				{
-					DiceRoll = Random.Range(1,6);
-				}	      
-			
-			DiceNumbers[i] = (DiceRoll -1);
-		}
-
-		AnimDice = true;
 		StartGame();
     }
 
@@ -76,14 +57,13 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         AnimPlayer();
-		AnimDiceRoll();
     }
 
     // StartGame prepares game for start
     public void StartGame()
     {
         GameEnded = false;
-        Vector3 Tile1Pos = Tiles. .Find("Tile1").transform.position;
+        Vector3 Tile1Pos = Tiles[0].transform.position;
         Vector3 StartPos = new Vector3(Tile1Pos.x, Tile1Pos.y, -2);
         foreach (GameObject player in Players)
         {
@@ -114,7 +94,7 @@ public class GameManager : MonoBehaviour
         RoundStarted = true;
         PlayerMoved = false;
 		SpecialTile = false;
-		AbleToStop = false;
+		Dice.AbleToStop = false;
         MainCamera.currentPlayer = Players[CurrentPlayerNr];
         UI.Desc = CurrentPlayer.GetComponent<Player>().Name + "'s turn has started. Press space to roll the dice.";
         StartCoroutine(Wait());
@@ -152,19 +132,7 @@ public class GameManager : MonoBehaviour
     public void RollDice()
     {
         KeyPressed = true;
-		DiceNumbers = new int[15];
-		for(int i=0; i<DiceNumbers.Length; i++)
-		{
-			int DiceRoll = Random.Range(1,6);
-			if(i != 0)
-				while(DiceRoll == DiceNumbers[i-1])
-			{
-				DiceRoll = Random.Range(1,6);
-			}	      
-			
-			DiceNumbers[i] = (DiceRoll -1);
-		}	
-		AnimDice = true;
+        Dice.StartAnimateDice();
 		KeyPressed = false;
 		StartCoroutine(WaitForDice());
     }
@@ -187,19 +155,7 @@ public class GameManager : MonoBehaviour
 		}
 		else if(Tile.Philosopher)
 		{
-			DiceNumbers = new int[15];
-			for(int i=0; i<DiceNumbers.Length; i++)
-			{
-				int DiceRoll = Random.Range(1,6);
-				if(i != 0)
-					while(DiceRoll == DiceNumbers[i-1])
-				{
-					DiceRoll = Random.Range(1,6);
-				}	      
-				
-				DiceNumbers[i] = (DiceRoll -1);
-			}	
-			AnimDice = true;
+            Dice.StartAnimateDice();
 			StartCoroutine(WaitForDice());
 		}
 		else if (TargetTileNr == 73)
@@ -283,53 +239,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-	public void AnimDiceRoll()
-	{
-		if(AnimDice)
-		{
-			DiceTimer += 0.1f;
-			if(DiceTimer >= 0.0f && DiceTimer < 0.3f)	
-				UI.DiceNr = DiceNumbers[0];
-			if(DiceTimer >= 0.3f && DiceTimer < 0.6f)	
-				UI.DiceNr = DiceNumbers[1];
-			if(DiceTimer >= 1.0f && DiceTimer < 1.4f)
-			{
-				UI.DiceNr = DiceNumbers[2];
-				AbleToStop = true;
-			}
-			if(DiceTimer >= 1.4f && DiceTimer < 1.8f)	
-				UI.DiceNr = DiceNumbers[3];
-			if(DiceTimer >= 1.8f && DiceTimer < 2.2f)	
-				UI.DiceNr = DiceNumbers[4];
-			if(DiceTimer >= 2.2f && DiceTimer < 2.7f)	
-				UI.DiceNr = DiceNumbers[5];
-			if(DiceTimer >= 3.3f && DiceTimer < 4.0f)	
-				UI.DiceNr = DiceNumbers[6];
-			if(DiceTimer >= 4.8f && DiceTimer < 5.7f)
-				UI.DiceNr = DiceNumbers[7];
-			if(DiceTimer >= 5.7f && DiceTimer < 6.7f)
-				UI.DiceNr = DiceNumbers[8];
-			if(DiceTimer >= 6.7f && DiceTimer < 7.8f)
-				UI.DiceNr = DiceNumbers[9];
-			if(DiceTimer >= 8.9f && DiceTimer < 10.1f)
-				UI.DiceNr = DiceNumbers[10];
-			if(DiceTimer >= 11.4f && DiceTimer < 12.8f)
-				UI.DiceNr = DiceNumbers[11];
-			if(DiceTimer >= 14.5f && DiceTimer < 16.2f)
-				UI.DiceNr = DiceNumbers[12];
-			if(DiceTimer >= 18.0f && DiceTimer < 19.9f)
-				UI.DiceNr = DiceNumbers[13];
-			if(DiceTimer >= 21.6f && DiceTimer < 22.0f)
-				UI.DiceNr = DiceNumbers[14];
-			if(DiceTimer >= 22.0f)
-			{
-				DiceTimer = 0.0f;
-				AbleToStop = false;
-				AnimDice = false;
-			}
-		}
-	}
-
     public IEnumerator StateMachine(string Button)
     {
         while (!KeyPressed)
@@ -362,7 +271,7 @@ public class GameManager : MonoBehaviour
                             {
 					 			if(ExtraMoveAmount == 0)
 								{
-									MovePlayer(DiceNumbers[DiceNumbers.Length-1] + 1);
+									MovePlayer(Dice.DiceNumbers[Dice.DiceNumbers.Length-1] + 1);
 								}
 								else
 								{
@@ -400,15 +309,12 @@ public class GameManager : MonoBehaviour
 
 	public IEnumerator WaitForDice()
 	{
-		while(AnimDice)
+		while(Dice.AnimDice)
 		{
 			Debug.Log("Animating");
-			if(Input.GetKeyDown(KeyCode.Space) && AbleToStop)
+			if(Input.GetKeyDown(KeyCode.Space) && Dice.AbleToStop)
 			{
-				DiceTimer = 0.0f;
-				UI.DiceNr = DiceNumbers[14];
-				AbleToStop = false;
-				AnimDice = false;
+                Dice.StopAnimateDice();
 			}
 			yield return 0;
 		}

@@ -51,6 +51,7 @@
      <Compile Include="Assets\Scripts\ButtonUp.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\CloseWindow.cs" />
+     <Compile Include="Assets\Scripts\Dice.cs" />
      <Compile Include="Assets\Scripts\GameInfo.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\House.cs" />
