@@ -16,6 +16,7 @@ public class PlayerMenu : MonoBehaviour {
 	public List<GameObject> PlayerLabels;
 	public int AmountOfPlayers;
 	public List<Sprite> Icons;
+    public List<Sprite> DiceFaces;
 	public InputField InputField;
 	public MenuUI UI;
 	double DiceTimer;
@@ -109,6 +110,10 @@ public class PlayerMenu : MonoBehaviour {
 
 	public void StartGame()
 	{
+        foreach(GameObject Label in PlayerLabels)
+        {
+            Label.transform.FindChild("Remove").gameObject.SetActive(false);
+        }
 		StartButton.SetActive(false);
 		MenuAddPlayer.SetActive(false);
 		CurrentPlayerNr = 0;
@@ -139,8 +144,10 @@ public class PlayerMenu : MonoBehaviour {
 
 	public void UpdatePlayerPosition()
 	{
-		Debug.Log(Players[CurrentPlayerNr].Name + " : " + (DiceNumbers[DiceNumbers.Length-1] + 1));
+        int rolledNr = DiceNumbers[DiceNumbers.Length-1] + 1;
+		Debug.Log(Players[CurrentPlayerNr].Name + " : " + rolledNr);
 		Players[CurrentPlayerNr].DiceNr = (DiceNumbers[DiceNumbers.Length-1] + 1);
+        PlayerLabels[CurrentPlayerNr].transform.FindChild("Dice").GetComponent<SpriteRenderer>().sprite = DiceFaces.Find(x => x.name == ("die" + rolledNr));
 		UpdatePlayerPositions();
 		KeyPressed = false;
 		StartCoroutine(NextRoll("Jump"));
