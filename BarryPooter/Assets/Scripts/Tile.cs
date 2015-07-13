@@ -20,6 +20,12 @@ public class Tile : MonoBehaviour {
     public string OptionRoll2;
     public int MaxLowerRange;
     public string Type;
+	public GameManager gameManager;
+
+	void Start()
+	{
+		gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+	}
 
 	public string TileResponse(int diceRoll) 
 	{
