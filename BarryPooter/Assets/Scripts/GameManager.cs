@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         UI = Camera.main.GetComponent<UI>();
+        Dice = GameObject.Find("GameManager").GetComponent<Dice>();
 		List<PlayerInfo> PlayersInfo = GameObject.Find("PlayerMenu").GetComponent<PlayerMenu>().Players;
         int PlayerNr = 1;
 		Houses = GameObject.Find("Houses").GetComponent<Houses>();

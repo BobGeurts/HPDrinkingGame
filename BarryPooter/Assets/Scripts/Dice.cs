@@ -21,6 +21,8 @@ public class Dice : MonoBehaviour {
 	    AnimDiceRoll();
 	}
 
+    public Dice() {}
+
     public void StartAnimateDice()
     {
         DiceNumbers = new int[15];
