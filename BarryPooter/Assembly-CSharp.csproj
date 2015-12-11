@@ -62,6 +62,7 @@
      <Compile Include="Assets\Scripts\PlayerMenu.cs" />
      <Compile Include="Assets\Scripts\RemoveLabel.cs" />
      <Compile Include="Assets\Scripts\SelectIcon.cs" />
+     <Compile Include="Assets\Scripts\StateMachine.cs" />
      <Compile Include="Assets\Scripts\Tile.cs" />
      <Compile Include="Assets\Scripts\UI.cs" />
  <Reference Include="UnityEngine.UI">

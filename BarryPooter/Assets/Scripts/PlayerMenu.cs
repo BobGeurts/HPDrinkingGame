@@ -25,6 +25,7 @@ public class PlayerMenu : MonoBehaviour {
 	bool KeyPressed;
 	bool AbleToStop;
 	public int CurrentPlayerNr;
+    
 
 
 	// Use this for initialization
@@ -70,6 +71,8 @@ public class PlayerMenu : MonoBehaviour {
 		CanvasAddPlayer.SetActive(true);
 		MenuAddPlayer.SetActive(false);
 		InputField.enabled = true;
+        //EventSystemManager.currentSystem.SetSelectedGameObject(InputField.gameObject, null);
+        //InputField.OnPointerClick(new PointerEventData(EventSystem.current));
 	}
 
 	public void CloseWindow()
@@ -148,8 +151,11 @@ public class PlayerMenu : MonoBehaviour {
 		Debug.Log(Players[CurrentPlayerNr].Name + " : " + rolledNr);
 		Players[CurrentPlayerNr].DiceNr = (DiceNumbers[DiceNumbers.Length-1] + 1);
         PlayerLabels[CurrentPlayerNr].transform.FindChild("Dice").GetComponent<SpriteRenderer>().sprite = DiceFaces.Find(x => x.name == ("die" + rolledNr));
-		UpdatePlayerPositions();
 		KeyPressed = false;
+        if(CurrentPlayerNr == Players.Count-1)
+        {
+            UpdatePlayerPositions();
+        }
 		StartCoroutine(NextRoll("Jump"));
 	}
 

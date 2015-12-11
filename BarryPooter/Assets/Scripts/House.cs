@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class House : MonoBehaviour {
 	public string HouseName;
 	public List<string> members;
+    public bool Army;
 
 	public House(string name)
 	{

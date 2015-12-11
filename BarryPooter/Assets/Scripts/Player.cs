@@ -7,6 +7,9 @@ public class Player : MonoBehaviour {
     public int CurrentTile;
     public string House;
 	public bool SkipTurn;
+    public bool ExtraTurn;
+    public bool RemainOnTile;
+    public bool Sword;
 
 	// Use this for initialization
 	void Start () {

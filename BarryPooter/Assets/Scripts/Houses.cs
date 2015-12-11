@@ -43,4 +43,9 @@ public class Houses : MonoBehaviour {
 	{
 		return houses.First(x => x.HouseName == HouseName).members;
 	}
+
+    public House getHouse(string HouseName)
+    {
+        return houses.First(x => x.HouseName == HouseName);
+    }
 }

@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     bool PlayerMoved;
     bool DiceRolled;
     bool GameEnded;
-	bool SpecialTile;
+    bool ExtraThrow;
 
     // Use this for initialization
     void Start()
@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
         CurrentPlayerNr = 0;
         MainCamera = GameObject.Find("Main Camera").GetComponent<CameraFollow>();
         MainCamera.currentPlayer = Players[CurrentPlayerNr];
-        UI.Desc = "Press space to start the first turn.";
+        UI.Desc = "Druk op spatie om aan de eerste beurt te beginnen.";
         StartCoroutine(StateMachine("Jump"));
     }
 
@@ -91,23 +91,50 @@ public class GameManager : MonoBehaviour
         KeyPressed = true;
         CurrentPlayer = Players[CurrentPlayerNr];
         CurrentPlayerScript = CurrentPlayer.GetComponent<Player>();
-        CurrentTileNr = CurrentPlayerScript.CurrentTile;
         RoundStarted = true;
-        PlayerMoved = false;
-		SpecialTile = false;
-		Dice.AbleToStop = false;
-        MainCamera.currentPlayer = Players[CurrentPlayerNr];
-        UI.Desc = CurrentPlayer.GetComponent<Player>().Name + "'s turn has started. Press space to roll the dice.";
-        StartCoroutine(Wait());
+        if (!CurrentPlayerScript.SkipTurn)
+        {
+            CurrentTileNr = CurrentPlayerScript.CurrentTile;
+            PlayerMoved = false;
+            ExtraThrow = false;
+            Dice.AbleToStop = false;
+            MainCamera.currentPlayer = Players[CurrentPlayerNr];
+            UI.Desc = CurrentPlayerScript.Name + "'s beurt is begonnen. Druk op spatie om de dobbelsteen te rollen.";
+            if (!CurrentPlayerScript.RemainOnTile)
+            {
+                StartCoroutine(Wait());
+            }
+            else
+            {              
+                PlayerMoving = false;
+                KeyPressed = false;
+                PlayerMoved = true;
+                DiceRolled = true;
+                TargetTileNr = CurrentPlayerScript.CurrentTile;
+                TileResponse();
+            }
+        }
+        else
+        {
+            UI.Desc = CurrentPlayerScript.Name + " moet een beurt overslaan.";
+            PlayerMoved = true;
+            CurrentPlayerScript.SkipTurn = false;
+            StartCoroutine(StateMachine("Jump"));
+        }
     }
 
     public void EndRound()
     {
         KeyPressed = true;
-        if (CurrentPlayerNr + 1 == Players.Count)
-            CurrentPlayerNr = 0;
+        if (!CurrentPlayerScript.ExtraTurn)
+        {
+            if (CurrentPlayerNr + 1 == Players.Count)
+                CurrentPlayerNr = 0;
+            else
+                CurrentPlayerNr++;
+        }
         else
-            CurrentPlayerNr++;
+            CurrentPlayerScript.ExtraTurn = false;
         RoundStarted = false;
         DiceRolled = false;
         KeyPressed = false;
@@ -117,7 +144,15 @@ public class GameManager : MonoBehaviour
     public void MovePlayer(int MoveAmount)
     {
 		Debug.Log("Move " + MoveAmount + " spaces");
-		UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " moves " + MoveAmount + " spaces.";
+        if (MoveAmount > 0)
+        {
+            UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " zet " + MoveAmount + " stappen.";
+        }
+        else
+        {
+            UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " zet " + MoveAmount + " stappen terug.";
+        }
+
 		TargetTileNr = CurrentTileNr + MoveAmount;
 		foreach(int required in RequiredTiles)
 		{
@@ -141,35 +176,40 @@ public class GameManager : MonoBehaviour
     public void TileResponse()
     {
         Tile Tile = GameObject.Find("Tile" + TargetTileNr).GetComponent<Tile>();
-		ExtraMoveAmount = 0;
-        if (Tile.MoveAmount != 0)
+        if(TargetTileNr > 36 && TargetTileNr < 43)
         {
-            PlayerMoved = false;
-            ExtraMoveAmount = Tile.MoveAmount;
+            Houses.getHouse(CurrentPlayerScript.House).Army = true;
+        }
+
+		ExtraMoveAmount = 0;
+        if (Tile.Type == "Roll") 
+        {
+            UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " " + Tile.TileRoll(Random.Range(1,6));
             StartCoroutine(Wait());
         }
-		else if(Tile.Sortinghat)
-		{
-			CurrentPlayerScript.House = Houses.AddPlayerToRandomHouse(CurrentPlayerScript.Name);
-			UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " is placed in " + CurrentPlayerScript.House;
-
-		}
-		else if(Tile.Philosopher)
-		{
-            Dice.StartAnimateDice();
-			StartCoroutine(WaitForDice());
-		}
 		else if (TargetTileNr == 73)
         {
-            UI.Desc += " Press space to return to the main menu.";
+            UI.Desc += " Druk op spatie om terug te keren naar het menu.";
             GameEnded = true;
             StartCoroutine(Wait());
         }
 		else
 		{
-			UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " " + Tile.TileDesc;
+            if (Tile.Type == "Everyone" || Tile.Type == "House" || Tile.Type == "Bazingarang")
+                UI.Desc = Tile.TileResponse();
+            else if (Houses.getHouse(CurrentPlayerScript.House).Army)
+            {
+                UI.Desc = Tile.TileResponse() + " - Dumbledores Army - Indien de speler moet drinken, ";
+            }
+            else
+                UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " " + Tile.TileResponse();
 		}
-        StartCoroutine(StateMachine("Jump"));
+
+        if(ExtraMoveAmount != 0)
+        {
+            PlayerMoved = false;
+        }
+        StartCoroutine(Wait());
     }
 
     public void AnimPlayer()
@@ -242,13 +282,10 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator StateMachine(string Button)
     {
+        KeyPressed = false;
         while (!KeyPressed)
         {
-			if(SpecialTile)
-			{
-
-			}
-			else if (Input.GetButtonDown(Button))
+            if (Input.GetButtonDown(Button))
             {
                 if (!GameEnded)
                 {
@@ -270,9 +307,10 @@ public class GameManager : MonoBehaviour
                         {
                             if (!PlayerMoved)
                             {
-					 			if(ExtraMoveAmount == 0)
+                                if(ExtraMoveAmount == 0)
 								{
 									MovePlayer(Dice.DiceNumbers[Dice.DiceNumbers.Length-1] + 1);
+                                    break;
 								}
 								else
 								{
@@ -308,18 +346,18 @@ public class GameManager : MonoBehaviour
         StartCoroutine(StateMachine("Jump"));
     }
 
-	public IEnumerator WaitForDice()
-	{
-		while(Dice.AnimDice)
-		{
-			Debug.Log("Animating");
-			if(Input.GetKeyDown(KeyCode.Space) && Dice.AbleToStop)
-			{
+    public IEnumerator WaitForDice()
+    {
+        while (Dice.AnimDice)
+        {
+            Debug.Log("Animating");
+            if (Input.GetKeyDown(KeyCode.Space) && Dice.AbleToStop)
+            {
                 Dice.StopAnimateDice();
-			}
-			yield return 0;
-		}
-		DiceRolled = true;
-		StartCoroutine(StateMachine("Jump"));
-	}
+            }
+            yield return 0;
+        }
+        DiceRolled = true;
+        StartCoroutine(StateMachine("Jump"));
+    }
 }
