@@ -197,7 +197,7 @@ public class GameManager : MonoBehaviour
 		{
             if (Tile.Type == "Everyone" || Tile.Type == "House" || Tile.Type == "Bazingarang")
                 UI.Desc = Tile.TileResponse();
-            else if (Houses.getHouse(CurrentPlayerScript.House).Army)
+            else if (CurrentPlayerScript.House != string.Empty && Houses.getHouse(CurrentPlayerScript.House).Army)
             {
                 UI.Desc = Tile.TileResponse() + " - Dumbledores Army - Indien de speler moet drinken, ";
             }
@@ -354,20 +354,13 @@ public class GameManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space) && Dice.AbleToStop)
             {
                 Dice.StopAnimateDice();
-<<<<<<< HEAD
-            }
-            yield return 0;
-        }
-        DiceRolled = true;
-        StartCoroutine(StateMachine("Jump"));
-    }
-=======
 			}
 			yield return 0;
 		}
 		DiceRolled = true;
 		StartCoroutine(StateMachine("Jump"));
 	}
+
 	public void CheckPositionAvailable(int TileNumber)
 	{  
 		int PlayersOnTile = 0;
@@ -393,6 +386,7 @@ public class GameManager : MonoBehaviour
 				case 7: moveUpAmount--; moveRightAmount++;
 					break;
 				case 8: moveUpAmount--; moveRightAmount--;
+                    break;
 				}
 				Vector2 nieuwPos = player.transform.position;
 				nieuwPos.Set (GameObject.Find("Tile"+TileNumber).transform.position.x + moveRightAmount, GameObject.Find("Tile"+TileNumber).transform.position.y + moveUpAmount);
@@ -402,5 +396,4 @@ public class GameManager : MonoBehaviour
 		}
 
 	}
->>>>>>> origin/master
 }
