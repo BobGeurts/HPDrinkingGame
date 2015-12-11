@@ -271,8 +271,8 @@ public class GameManager : MonoBehaviour
 
             if (CurrentTileNr == TargetTileNr)
             {
-                CurrentPlayer.transform.position = new Vector3(NewPosition.x, NewPosition.y, -2);
-                PlayerMoving = false;
+				CheckPositionAvailable(TargetTileNr);
+				PlayerMoving = false;
                 KeyPressed = false;
                 PlayerMoved = true;
                 TileResponse();
@@ -354,10 +354,53 @@ public class GameManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space) && Dice.AbleToStop)
             {
                 Dice.StopAnimateDice();
+<<<<<<< HEAD
             }
             yield return 0;
         }
         DiceRolled = true;
         StartCoroutine(StateMachine("Jump"));
     }
+=======
+			}
+			yield return 0;
+		}
+		DiceRolled = true;
+		StartCoroutine(StateMachine("Jump"));
+	}
+	public void CheckPositionAvailable(int TileNumber)
+	{  
+		int PlayersOnTile = 0;
+		foreach (GameObject player in Players) {
+			if (TileNumber == player.GetComponent<Player>().CurrentTile)
+			{
+				int moveRightAmount = 0; 
+				int moveUpAmount = 0;
+				switch (PlayersOnTile) {
+				case 0: break;
+				case 1: moveRightAmount++;
+					break;
+				case 2: moveRightAmount--;
+					break;
+				case 3: moveUpAmount++;
+					break;
+				case 4: moveUpAmount--; 
+					break;
+				case 5: moveUpAmount++; moveRightAmount++;
+					break;
+				case 6: moveUpAmount++; moveRightAmount--;
+					break;
+				case 7: moveUpAmount--; moveRightAmount++;
+					break;
+				case 8: moveUpAmount--; moveRightAmount--;
+				}
+				Vector2 nieuwPos = player.transform.position;
+				nieuwPos.Set (GameObject.Find("Tile"+TileNumber).transform.position.x + moveRightAmount, GameObject.Find("Tile"+TileNumber).transform.position.y + moveUpAmount);
+				player.transform.position = nieuwPos;
+				PlayersOnTile++;
+			}
+		}
+
+	}
+>>>>>>> origin/master
 }
