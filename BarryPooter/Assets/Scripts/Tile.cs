@@ -145,7 +145,7 @@ public class Tile : MonoBehaviour {
 
 
             case "Horcrux":
-                if(random < MaxLowerRange)
+                if(random <= MaxLowerRange)
                 {
                     playerscript.RemainOnTile = true;
                     return OptionRoll1 + " De speler heeft " + random + " gegooid";
