@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         CurrentTile = 1;
-        House = "";
+        House = string.Empty;
 	}
 	
 	// Update is called once per frame

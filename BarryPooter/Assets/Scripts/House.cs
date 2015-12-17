@@ -10,6 +10,7 @@ public class House : MonoBehaviour {
 	public House(string name)
 	{
 		HouseName = name;
+        Army = false;
 	}
 
 	// Use this for initialization

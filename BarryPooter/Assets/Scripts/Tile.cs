@@ -26,6 +26,7 @@ public class Tile : MonoBehaviour {
 
 	public string TileResponse() 
 	{
+        int random = Random.Range(1, 6);
         Player playerscript = gameManager.CurrentPlayerScript;
         string response = string.Empty;
 
@@ -74,26 +75,26 @@ public class Tile : MonoBehaviour {
                     return "moet " + DumbleAmount + " drinken.";
 
             case "Parseltongue":
-                if (Random.Range(1, 6) < 4)
+                if (random < 4)
                 {
-                    return "moet een shot nemen.";
+                    return "moet een shot nemen. De speler heeft " + random + " gegooid";
                 } 
                 else
                 {
                     playerscript.ExtraTurn = true;
-                    return "krijgt een extra beurt.";
+                    return "krijgt een extra beurt. De speler heeft " + random + " gegooid";
                 }
 
             case "Bus":
-                if (Random.Range(1, 6) < 4)
+                if (random < 4)
                 {
                     playerscript.SkipTurn = true;
-                    return "verliest zijn volgende beurt.";
+                    return "verliest zijn volgende beurt. De speler heeft " + random + " gegooid";
                 } 
                 else
                 {
                     playerscript.ExtraTurn = true;
-                    return "krijgt een extra beurt.";
+                    return "krijgt een extra beurt. De speler heeft " + random + " gegooid";
                 }
 
             case "Bazingarang":
@@ -108,15 +109,15 @@ public class Tile : MonoBehaviour {
                 return TileDesc;
 
             case "Time Travel":
-                if(Random.Range(1,6) < 6)
+                if(random < 6)
                 {
                     gameManager.ExtraMoveAmount = -5;
-                    return OptionRoll1;
+                    return OptionRoll1 +  " De speler heeft " + random + " gegooid";
                 }
                 else
                 {
                     gameManager.ExtraMoveAmount = 1;
-                    return OptionRoll2;
+                    return OptionRoll2 + " De speler heeft " + random + " gegooid";
                 }
 
             case "Felix":
@@ -144,15 +145,15 @@ public class Tile : MonoBehaviour {
 
 
             case "Horcrux":
-                if(Random.Range(1,6) < MaxLowerRange)
+                if(random < MaxLowerRange)
                 {
                     playerscript.RemainOnTile = true;
-                    return OptionRoll1;
+                    return OptionRoll1 + " De speler heeft " + random + " gegooid";
                 }
                 else
                 {
                     playerscript.RemainOnTile = false;
-                    return OptionRoll2;
+                    return OptionRoll2 + " De speler heeft " + random + " gegooid";
                 }
 
             default:
@@ -163,16 +164,8 @@ public class Tile : MonoBehaviour {
     public string TileRoll(int diceRoll)
     {
         if (diceRoll >= 1 && diceRoll <= MaxLowerRange)
-            return OptionRoll1;
+            return OptionRoll1  +  " De speler heeft " + diceRoll + " gegooid";
         else
-            return OptionRoll2;
+            return OptionRoll2  +  " De speler heeft " + diceRoll + " gegooid";
     }
-
-	public bool CalcBus(int diceRoll)
-	{
-		if (diceRoll >= 1 && diceRoll <= MaxLowerRange)
-			return true;
-		else
-			return false;
-	}
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -180,6 +181,33 @@ public class GameManager : MonoBehaviour
         {
             Houses.getHouse(CurrentPlayerScript.House).Army = true;
         }
+        else
+        {
+            bool army = false;
+            if (CurrentPlayerScript.House != string.Empty)
+            {
+                foreach (string member in Houses.getHouse(CurrentPlayerScript.House).members)
+                {
+                    Debug.Log(member);
+                    Player playerscript = null;
+                    foreach(GameObject player in Players)
+                    {
+                        Player temp = player.GetComponent<Player>();
+                        if(temp.Name == member)
+                            playerscript = temp;
+                    }
+                    int tilenr = playerscript.CurrentTile;
+                    if (tilenr > 36 && tilenr < 43)
+                    {
+                        army = true;
+                    }
+                }
+                Houses.getHouse(CurrentPlayerScript.House).Army = army;
+            }
+        }
+
+        if (CurrentPlayerScript.House != string.Empty)
+            Debug.Log(Houses.getHouse(CurrentPlayerScript.House).Army);
 
 		ExtraMoveAmount = 0;
         if (Tile.Type == "Roll") 
@@ -199,7 +227,7 @@ public class GameManager : MonoBehaviour
                 UI.Desc = Tile.TileResponse();
             else if (CurrentPlayerScript.House != string.Empty && Houses.getHouse(CurrentPlayerScript.House).Army)
             {
-                UI.Desc = Tile.TileResponse() + " - Dumbledores Army - Indien de speler moet drinken, ";
+                UI.Desc = CurrentPlayerScript.Name + " " + Tile.TileResponse() + " - Dumbledores Army - Indien de speler moet drinken, ";
             }
             else
                 UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " " + Tile.TileResponse();
