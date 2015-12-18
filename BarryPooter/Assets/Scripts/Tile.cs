@@ -26,7 +26,7 @@ public class Tile : MonoBehaviour {
 
 	public string TileResponse() 
 	{
-        int random = Random.Range(1, 6);
+        int random = Random.Range(1, 7);
         Player playerscript = gameManager.CurrentPlayerScript;
         string response = string.Empty;
 

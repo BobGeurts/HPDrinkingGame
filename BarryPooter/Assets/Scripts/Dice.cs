@@ -30,7 +30,7 @@ public class Dice : MonoBehaviour {
             if (i != 0)
                 while (DiceRoll == DiceNumbers[i - 1])
                 {
-                    DiceRoll = Random.Range(1, 6);
+                    DiceRoll = Random.Range(1, 7);
                 }
 
             DiceNumbers[i] = (DiceRoll - 1);

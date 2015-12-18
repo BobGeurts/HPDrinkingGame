@@ -212,7 +212,7 @@ public class GameManager : MonoBehaviour
 		ExtraMoveAmount = 0;
         if (Tile.Type == "Roll") 
         {
-            UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " " + Tile.TileRoll(Random.Range(1,6));
+            UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " " + Tile.TileRoll(Random.Range(1,7));
             StartCoroutine(Wait());
         }
 		else if (TargetTileNr == 73)
@@ -414,6 +414,8 @@ public class GameManager : MonoBehaviour
 				case 7: moveUpAmount--; moveRightAmount++;
 					break;
 				case 8: moveUpAmount--; moveRightAmount--;
+                    break;
+                default:
                     break;
 				}
 				Vector2 nieuwPos = player.transform.position;
