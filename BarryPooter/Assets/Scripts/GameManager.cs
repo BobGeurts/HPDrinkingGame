@@ -223,11 +223,24 @@ public class GameManager : MonoBehaviour
         }
 		else
 		{
+            string description = string.Empty;
             if (Tile.Type == "Everyone" || Tile.Type == "House" || Tile.Type == "Bazingarang")
                 UI.Desc = Tile.TileResponse();
             else if (CurrentPlayerScript.House != string.Empty && Houses.getHouse(CurrentPlayerScript.House).Army)
             {
-                UI.Desc = CurrentPlayerScript.Name + " " + Tile.TileResponse() + " - Dumbledores Army - Indien de speler moet drinken, ";
+                description = CurrentPlayerScript.Name + " " + Tile.TileResponse() + " - Dumbledores Army - Indien de speler moet drinken, geldt dat ook voor:";
+                List<string> PlayerNames = Houses.GetHouseMembers(CurrentPlayerScript.House);
+                PlayerNames.Remove(CurrentPlayerScript.name);
+                if (PlayerNames.Count > 1)
+                {
+                    for (int i = 0; i < PlayerNames.Count - 1; i++)
+                    {
+                        description += PlayerNames[i] + ", ";
+                    }
+                    description = description.Substring(0, description.Length - 2);
+                }
+
+                UI.Desc = description;
             }
             else
                 UI.Desc = CurrentPlayer.GetComponent<Player>().Name + " " + Tile.TileResponse();
