@@ -201,6 +201,10 @@ public class PlayerMenu : MonoBehaviour {
 		}
 		PlayerLabels = tempLabelList;
 		SortLabels();
+        if (CurrentPlayerNr == Players.Count - 1)
+        {
+            Players = tempPlayers;
+        }
 	}
 
 	public void AnimDiceRoll()

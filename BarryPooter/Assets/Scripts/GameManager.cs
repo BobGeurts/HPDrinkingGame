@@ -230,10 +230,20 @@ public class GameManager : MonoBehaviour
             {
                 description = CurrentPlayerScript.Name + " " + Tile.TileResponse() + " - Dumbledores Army - Indien de speler moet drinken, geldt dat ook voor:";
                 List<string> PlayerNames = Houses.GetHouseMembers(CurrentPlayerScript.House);
-                PlayerNames.Remove(CurrentPlayerScript.name);
-                if (PlayerNames.Count > 1)
+                foreach (string woop in PlayerNames)
                 {
-                    for (int i = 0; i < PlayerNames.Count - 1; i++)
+                    Debug.Log(woop);
+                }
+                PlayerNames.Remove(CurrentPlayerScript.Name);
+                foreach(string woop in PlayerNames)
+                {
+                    Debug.Log(woop);
+                }
+
+                if (PlayerNames.Count > 0)
+                {
+                    description += " ";
+                    for (int i = 0; i < PlayerNames.Count; i++)
                     {
                         description += PlayerNames[i] + ", ";
                     }
