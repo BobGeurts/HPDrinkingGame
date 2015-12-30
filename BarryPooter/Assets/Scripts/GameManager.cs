@@ -285,7 +285,7 @@ public class GameManager : MonoBehaviour
 
             if (CurrentPos != NewPosition)
             {
-                newCurrentPos = new Vector3(CurrentPos.x + (StepPos.x * Time.deltaTime * 2), CurrentPos.y + (StepPos.y * Time.deltaTime * 2), -3);
+                newCurrentPos = new Vector3(CurrentPos.x + (StepPos.x * Time.deltaTime * 3), CurrentPos.y + (StepPos.y * Time.deltaTime * 3), -3);
             }
 
             bool xCorrect = false;
